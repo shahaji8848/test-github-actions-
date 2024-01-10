@@ -1,0 +1,30 @@
+name: Code Review Size Check
+on:
+  pull_request:
+    branches:
+      - main # Adjust as needed
+
+jobs:
+  code_review:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Check code size
+        run: |
+          SIZE=$(git diff --shortstat ${{ github.event.before }} ${{ github.event.after }} | grep "files changed" | awk '{print $1}')
+          if [ $SIZE -gt 250 ]; then
+            echo "Code changes exceed 250 lines. Please review!"
+            exit 1
+          else
+            echo "Code changes within limit."
+            exit 0
+          fi
+
+      - name: Send email notification
+        if: failure()
+        run: |
+          # Add code to send email notification here
+          echo "Sending email notification about code size failure"

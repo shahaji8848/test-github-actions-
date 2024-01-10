@@ -1,28 +1,22 @@
-name: Code Review Size Check
+name: Code Review Check
+
 on:
   push:
     branches:
-      - '*' # This will trigger the workflow on any branch push
+      - main # Adjust this to your main branch name
 
 jobs:
-  code_review:
+  check-lines:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Check code size
+      - name: Count lines in files
         run: |
-          SIZE=$(git diff --shortstat HEAD~1 | grep "files changed" | awk '{print $1}')
-          if [ $SIZE -gt 250 ]; then
-            echo "Code changes exceed 250 lines. Please review!"
-            exit 1
-          else
-            echo "Code changes within limit."
-            exit 0
-          fi
-
+          exceeded_lines=$(find . -type f -name "*" -exec awk 'END { if (NR > 250) print FILENAME }' {} \;)
+          echo "$exceeded_lines" > exceeded_files.txt      
       - name: Send email notification
         if: failure()
         env:

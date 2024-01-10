@@ -1,8 +1,8 @@
 name: Code Review Size Check
 on:
-  pull_request:
+  push:
     branches:
-      - main # Adjust as needed
+      - '*' # This will trigger the workflow on any branch push
 
 jobs:
   code_review:
@@ -14,7 +14,7 @@ jobs:
 
       - name: Check code size
         run: |
-          SIZE=$(git diff --shortstat ${{ github.event.before }} ${{ github.event.after }} | grep "files changed" | awk '{print $1}')
+          SIZE=$(git diff --shortstat HEAD~1 | grep "files changed" | awk '{print $1}')
           if [ $SIZE -gt 250 ]; then
             echo "Code changes exceed 250 lines. Please review!"
             exit 1

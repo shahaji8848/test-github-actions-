@@ -26,5 +26,38 @@ jobs:
       - name: Send email notification
         if: failure()
         run: |
-          # Add code to send email notification here
+          - name: Send email notification
+  if: failure()
+  env:
+    SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+  run: |
+    FROM_EMAIL=shahaji@8848digital.com"
+    TO_EMAIL="kshahaji04@gmail.com", "kshahaji02@gmail.com"
+    SUBJECT="Code Size Check Failed"
+    BODY="The code changes exceed 250 lines. Please review!"
+    
+    curl -X "POST" "https://api.sendgrid.com/v3/mail/send" \
+         -H "Authorization: Bearer $SENDGRID_API_KEY" \
+         -H "Content-Type: application/json" \
+         -d $'{
+        "personalizations": [
+          {
+            "to": [
+              {
+                "email": "'"$TO_EMAIL"'"
+              }
+            ],
+            "subject": "'"$SUBJECT"'"
+          }
+        ],
+        "from": {
+          "email": "'"$FROM_EMAIL"'"
+        },
+        "content": [
+          {
+            "type": "text/plain",
+            "value": "'"$BODY"'"
+          }
+        ]
+      }'
           echo "Sending email notification about code size failure"

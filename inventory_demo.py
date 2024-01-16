@@ -246,10 +246,6 @@ def main():
 if __name__ == "__main__":
     main()
 
-
-
-
-
 # Sample usage of the Inventory class
 def main():
     inventory = Inventory()
@@ -272,4 +268,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

@@ -29,6 +29,18 @@ jobs:
             exit 1
           fi
 
-      - name: Notify developers
+      - name: Display message
         if: failure()
-        run: echo "Code size exceeded the limit. Please reduce the code size before merging." | mail -s "Code Size Exceeded" kshahaji04@gmail.com
+        run: echo "Code size is within limits. Merging is allowed."
+
+      - name: Send email notification
+        if: failure()
+        uses: dawidd6/action-send-mail@v2
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.GMAIL_USER }}
+          password: ${{ secrets.GMAIL_PASSWORD }}
+          subject: "Code Size Exceeded"
+          to: shahaji@8848digital.com
+          body: "Code size exceeded the limit. Please reduce the code size before merging."
